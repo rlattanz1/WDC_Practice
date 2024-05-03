@@ -16,24 +16,21 @@
             alias: "genre description",
             dataType: tableau.dataTypeEnum.string
         }, {
-            Stats: [
-            {
-                id: "Series",
-                alias: "number of manga of this type",
-                dataType: tableau.dataTypeEnum.integer
-            }, {
-                id: "Authors",
-                alias: "number of authors of manga of this type",
-                dataType: tableau.dataTypeEnum.integer
-            }, {
-                id: "Filters",
-                alias: "number filters of manga of this type???",
-                dataType: tableau.dataTypeEnum.integer
-            }, {
-                id: "Highlights",
-                alias: "number of highlight manga of this type???",
-                dataType: tableau.dataTypeEnum.integer
-            }]
+            id: "Series",
+            alias: "number of manga of this type",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Authors",
+            alias: "number of authors of manga of this type",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Filters",
+            alias: "number filters of manga of this type???",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Highlights",
+            alias: "number of highlight manga of this type???",
+            dataType: tableau.dataTypeEnum.int
         }, {
             id: "Demographic",
             alias: "are there readers of this type of manga",
@@ -61,10 +58,10 @@
                     "id": feat[i].id,
                     "Genre": feat[i].properties.Genre,
                     "Description": feat[i].properties.Description,
-                    // "Series": feat[i].properties.Stats.Series,
-                    // "Authors": feat[i].properties.Stats.Authors,
-                    // "Filters": feat[i].properties.Stats.Filters,
-                    // "Highlights": feat[i].properties.Stats.Highlights,
+                    "Series": feat[i].properties.Stats.Series,
+                    "Authors": feat[i].properties.Stats.Authors,
+                    "Filters": feat[i].properties.Stats.Filters,
+                    "Highlights": feat[i].properties.Stats.Highlights,
                     "Demographic": feat[i].properties.Demographic
                 });
             }
