@@ -83,28 +83,30 @@
     };
 
     // Download the data
-    myConnector.getData = function(genreTable, userTable, doneCallback) {
+    myConnector.getData = function(table, doneCallback) {
         $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/genres", function(resp) {
             var feat = resp,
                 genreData = [];
             var len = Object.keys(resp).length
             // Iterate over the JSON object
-            for (var i = 0; i < len; i++) {
-                genreData.push({
-                    "id": feat[i].id,
-                    "Genre": feat[i].genre,
-                    "Description": feat[i].description,
-                    "Series": feat[i].stats.series,
-                    "Authors": feat[i].stats.authors,
-                    "Filters": feat[i].stats.filters,
-                    "Highlights": feat[i].stats.highlights,
-                    "Demographic": feat[i].demographic
-                });
+            if (table.tableInfo.id == "MangaGenre") {
+                for (var i = 0; i < len; i++) {
+                    genreData.push({
+                        "id": feat[i].id,
+                        "Genre": feat[i].genre,
+                        "Description": feat[i].description,
+                        "Series": feat[i].stats.series,
+                        "Authors": feat[i].stats.authors,
+                        "Filters": feat[i].stats.filters,
+                        "Highlights": feat[i].stats.highlights,
+                        "Demographic": feat[i].demographic
+                    });
+                }
             }
             console.log(genreData)
-            console.log(genreTable)
+            console.log(table)
 
-            genreTable.appendRows(genreData);
+            table.appendRows(genreData);
             doneCallback();
         });
 
@@ -114,23 +116,25 @@
             var len = Object.keys(resp).length
 
             // Iterate over the JSON object
-            for (var i = 0; i < len; i++) {
-                var usersLen = Object.keys(feat[i].users).length;
-                for (var j = 0; j < usersLen; j++) {
-                    userData.push({
-                        "category_id": feat[i].category_id,
-                        "Position": feat[i].position,
-                        "Title": feat[i].title,
-                        "Entry_id": feat[i].users[j].entry_id,
-                        "User_Position": feat[i].users[j].position,
-                        "Username": feat[i].users[j].username,
-                        "User_id": feat[i].users[j].user_id
-                })};
+            if (table.tableInfo.id == "MangaUsers") {
+                for (var i = 0; i < len; i++) {
+                    var usersLen = Object.keys(feat[i].users).length;
+                    for (var j = 0; j < usersLen; j++) {
+                        userData.push({
+                            "category_id": feat[i].category_id,
+                            "Position": feat[i].position,
+                            "Title": feat[i].title,
+                            "Entry_id": feat[i].users[j].entry_id,
+                            "User_Position": feat[i].users[j].position,
+                            "Username": feat[i].users[j].username,
+                            "User_id": feat[i].users[j].user_id
+                    })};
+                }
             }
             console.log(userData)
-            console.log(userTable)
+            console.log(table)
 
-            userTable.appendRows(userData);
+            table.appendRows(userData);
             doneCallback();
         });
     };
