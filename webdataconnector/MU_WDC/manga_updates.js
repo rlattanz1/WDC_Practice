@@ -48,21 +48,22 @@
 
     // Download the data
     myConnector.getData = function(table, doneCallback) {
-        $.getJSON("https://api.mangaupdates.com/v1/genres", function(resp) {
-            var feat = resp.features,
+        $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/genres", function(resp) {
+            var feat = resp,
                 tableData = [];
-
+            var len = Object.keys(resp).length
+            console.log(feat)
             // Iterate over the JSON object
-            for (var i = 0, len = feat.length; i < len; i++) {
+            for (var i = 0; i < len; i++) {
                 tableData.push({
                     "id": feat[i].id,
-                    "Genre": feat[i].properties.Genre,
-                    "Description": feat[i].properties.Description,
-                    "Series": feat[i].properties.Stats.Series,
-                    "Authors": feat[i].properties.Stats.Authors,
-                    "Filters": feat[i].properties.Stats.Filters,
-                    "Highlights": feat[i].properties.Stats.Highlights,
-                    "Demographic": feat[i].properties.Demographic
+                    "Genre": feat[i].genre,
+                    "Description": feat[i].description,
+                    "Series": feat[i].stats.series,
+                    "Authors": feat[i].stats.authors,
+                    "Filters": feat[i].stats.filters,
+                    "Highlights": feat[i].stats.highlights,
+                    "Demographic": feat[i].demographic
                 });
             }
 
