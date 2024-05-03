@@ -4,7 +4,7 @@
 
     // Define the schema
     myConnector.getSchema = function(schemaCallback) {
-        var cols = [{
+        var genreCols = [{
             id: "id",
             dataType: tableau.dataTypeEnum.int
         }, {
@@ -37,25 +37,60 @@
             dataType: tableau.dataTypeEnum.bool
         }];
 
-        var tableSchema = {
+        var usersCols = [{
+            id: "Category_id",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Title",
+            alias: "category type",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Position",
+            alias: "category position",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Entry_id",
+            alias: "entry id value",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "User_Position",
+            alias: "position value",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Username",
+            alias: "username",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "User_id",
+            alias: "user id",
+            dataType: tableau.dataTypeEnum.int
+        }];
+
+        var genreSchema = {
             id: "MangaGenre",
             alias: "Manga genres available in manga updates",
-            columns: cols
+            columns: genreCols
         };
 
-        schemaCallback([tableSchema]);
+        var usersSchema = {
+            id: "MangaUsers",
+            alias: "Manga user data",
+            columns: usersCols
+        };
+
+        schemaCallback([genreSchema, usersSchema]);
+        // schemaCallback([usersSchema]);
     };
 
     // Download the data
-    myConnector.getData = function(table, doneCallback) {
+    myConnector.getData = function(genreTable, userTable, doneCallback) {
         $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/genres", function(resp) {
             var feat = resp,
-                tableData = [];
+                genreData = [];
             var len = Object.keys(resp).length
-            console.log(feat)
             // Iterate over the JSON object
             for (var i = 0; i < len; i++) {
-                tableData.push({
+                genreData.push({
                     "id": feat[i].id,
                     "Genre": feat[i].genre,
                     "Description": feat[i].description,
@@ -66,8 +101,36 @@
                     "Demographic": feat[i].demographic
                 });
             }
+            console.log(genreData)
+            console.log(genreTable)
 
-            table.appendRows(tableData);
+            genreTable.appendRows(genreData);
+            doneCallback();
+        });
+
+        $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/aboutus/users", function(resp) {
+            var feat = resp,
+                userData = [];
+            var len = Object.keys(resp).length
+
+            // Iterate over the JSON object
+            for (var i = 0; i < len; i++) {
+                var usersLen = Object.keys(feat[i].users).length;
+                for (var j = 0; j < usersLen; j++) {
+                    userData.push({
+                        "category_id": feat[i].category_id,
+                        "Position": feat[i].position,
+                        "Title": feat[i].title,
+                        "Entry_id": feat[i].users[j].entry_id,
+                        "User_Position": feat[i].users[j].position,
+                        "Username": feat[i].users[j].username,
+                        "User_id": feat[i].users[j].user_id
+                })};
+            }
+            console.log(userData)
+            console.log(userTable)
+
+            userTable.appendRows(userData);
             doneCallback();
         });
     };
