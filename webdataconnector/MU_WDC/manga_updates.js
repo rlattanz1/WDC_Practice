@@ -121,7 +121,7 @@
                     var usersLen = Object.keys(feat[i].users).length;
                     for (var j = 0; j < usersLen; j++) {
                         userData.push({
-                            "category_id": feat[i].category_id,
+                            "Category_id": feat[i].category_id,
                             "Position": feat[i].position,
                             "Title": feat[i].title,
                             "Entry_id": feat[i].users[j].entry_id,
