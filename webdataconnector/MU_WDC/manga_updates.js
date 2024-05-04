@@ -105,6 +105,10 @@
             id: "Release_date",
             alias: "date of release",
             dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Series_id",
+            alias: "id of the series",
+            dataType: tableau.dataTypeEnum.int
         }
     ];
 
@@ -181,7 +185,7 @@
             doneCallback();
         });
 
-        $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/releases/days", function(resp) {
+        $.getJSON("http://localhost:8889/https://api.mangaupdates.com/v1/releases/days/?include_metadata=true", function(resp) {
             var feat = resp,
                 dailyRelData = [];
             var resLen = Object.keys(resp.results).length;
@@ -201,7 +205,8 @@
                             "Chapter": feat.results[i].record.chapter,
                             "Group_name": feat.results[i].record.groups[j].name,
                             "Group_id": feat.results[i].record.groups[j].group_id,
-                            "Release_date": feat.results[i].record.release_date
+                            "Release_date": feat.results[i].record.release_date,
+                            "Series_id": feat.results[i].metadata.series.series_id
                     })};
                 }
             }
