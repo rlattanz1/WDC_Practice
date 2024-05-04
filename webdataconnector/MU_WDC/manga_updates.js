@@ -66,6 +66,48 @@
             dataType: tableau.dataTypeEnum.int
         }];
 
+        var dailyRelCols = [{
+            id: "Total_hits",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Page",
+            alias: "page number",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Per_page",
+            alias: "per page???",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "id",
+            alias: "id value",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Title",
+            alias: "series title",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Volume",
+            alias: "volume released",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Chapter",
+            alias: "chapter released",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Group_name",
+            alias: "name of group",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Group_id",
+            alias: "id of group",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Release_date",
+            alias: "date of release",
+            dataType: tableau.dataTypeEnum.string
+        }
+    ];
+
         var genreSchema = {
             id: "MangaGenre",
             alias: "Manga genres available in manga updates",
@@ -78,8 +120,13 @@
             columns: usersCols
         };
 
-        schemaCallback([genreSchema, usersSchema]);
-        // schemaCallback([usersSchema]);
+        var dailyRelSchema = {
+            id: "DailyMangaReleases",
+            alias: "Manga daily release data",
+            columns: dailyRelCols
+        };
+
+        schemaCallback([genreSchema, usersSchema, dailyRelSchema]);
     };
 
     // Download the data
@@ -103,8 +150,6 @@
                     });
                 }
             }
-            console.log(genreData)
-            console.log(table)
 
             table.appendRows(genreData);
             doneCallback();
@@ -131,10 +176,37 @@
                     })};
                 }
             }
-            console.log(userData)
-            console.log(table)
 
             table.appendRows(userData);
+            doneCallback();
+        });
+
+        $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/releases/days", function(resp) {
+            var feat = resp,
+                dailyRelData = [];
+            var resLen = Object.keys(resp.results).length;
+
+            // Iterate over the JSON object
+            if (table.tableInfo.id == "DailyMangaReleases") {
+                for (var i = 0; i < resLen; i++) {
+                var groupLen = Object.keys(feat.results[i].record.groups).length;
+                    for (var j = 0; j < groupLen; j++) {
+                        dailyRelData.push({
+                            "Total_hits": feat.total_hits,
+                            "Page": feat.page,
+                            "Per_page": feat.per_page,
+                            "id": feat.results[i].record.id,
+                            "Title": feat.results[i].record.title,
+                            "Volume": feat.results[i].record.volume,
+                            "Chapter": feat.results[i].record.chapter,
+                            "Group_name": feat.results[i].record.groups[j].name,
+                            "Group_id": feat.results[i].record.groups[j].group_id,
+                            "Release_date": feat.results[i].record.release_date
+                    })};
+                }
+            }
+
+            table.appendRows(dailyRelData);
             doneCallback();
         });
     };
