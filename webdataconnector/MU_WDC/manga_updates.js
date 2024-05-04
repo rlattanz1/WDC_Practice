@@ -185,7 +185,7 @@
             doneCallback();
         });
 
-        $.getJSON("http://localhost:8889/https://api.mangaupdates.com/v1/releases/days/?include_metadata=true", function(resp) {
+        $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/releases/days/?include_metadata=true", function(resp) {
             var feat = resp,
                 dailyRelData = [];
             var resLen = Object.keys(resp.results).length;
@@ -210,10 +210,40 @@
                     })};
                 }
             }
-
             table.appendRows(dailyRelData);
             doneCallback();
         });
+
+        // $.postJSON("http://localhost:8889/api.mangaupdates.com/v1/authors/946927798/series", function(resp) {
+        //     var feat = resp,
+        //         authorSeriesData = [];
+        //     var Len = Object.keys(resp).length;
+
+        //     // Iterate over the JSON object
+        //     if (table.tableInfo.id == "") {
+        //         for (var i = 0; i < ; i++) {
+        //         var Len = Object.keys(feat.).length;
+        //             for (var j = 0; j < Len; j++) {
+        //                 authorSeriesData.push({
+        //                     "Total_hits": feat.total_hits,
+        //                     "Page": feat.page,
+        //                     "Per_page": feat.per_page,
+        //                     "id": feat.results[i].record.id,
+        //                     "Title": feat.results[i].record.title,
+        //                     "Volume": feat.results[i].record.volume,
+        //                     "Chapter": feat.results[i].record.chapter,
+        //                     "Group_name": feat.results[i].record.groups[j].name,
+        //                     "Group_id": feat.results[i].record.groups[j].group_id,
+        //                     "Release_date": feat.results[i].record.release_date,
+        //                     "Series_id": feat.results[i].metadata.series.series_id
+        //             })};
+        //         }
+
+        //     }
+
+        //     table.appendRows(authorSeriesData);
+        //     doneCallback();
+        // });
     };
 
     tableau.registerConnector(myConnector);
