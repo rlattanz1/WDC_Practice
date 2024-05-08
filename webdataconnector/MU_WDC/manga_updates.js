@@ -109,8 +109,118 @@
             id: "Series_id",
             alias: "id of the series",
             dataType: tableau.dataTypeEnum.int
-        }
-    ];
+        }];
+
+        // var authorCols = [{
+        //     id: "Total_series",
+        //     dataType: tableau.dataTypeEnum.int
+        // }, {
+        //     id: "Title",
+        //     alias: "Series title",
+        //     dataType: tableau.dataTypeEnum.string
+        // }, {
+        //     id: "Series_id",
+        //     alias: "series id",
+        //     dataType: tableau.dataTypeEnum.int
+        // }, {
+        //     id: "Year",
+        //     alias: "Series year",
+        //     dataType: tableau.dataTypeEnum.int
+        // }, {
+        //     id: "Genres",
+        //     alias: "genres",
+        //     dataType: tableau.dataTypeEnum.string
+        // }];
+
+
+        var seriesInfoCols = [{
+            id: "Series_id",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Title",
+            alias: "Series title",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Url",
+            alias: "series url",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Description",
+            alias: "Series description",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Image_url",
+            alias: "Series image url",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Type",
+            alias: "Series type",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Year",
+            alias: "Series creation year",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Bayesian_rating",
+            alias: "Series bayesian rating",
+            dataType: tableau.dataTypeEnum.float
+        }, {
+            id: "Genres",
+            alias: "genres",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Categories",
+            alias: "Series categories",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Latest_chapter",
+            alias: "Series current/last chapter",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Status",
+            alias: "Series completion status",
+            dataType: tableau.dataTypeEnum.bool
+        }, {
+            id: "Anime_start",
+            alias: "Start of anime adaption seasons series chapter",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Anime_end",
+            alias: "End of anime adaption seasons series chapter",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Authors",
+            alias: "Series author/artist information",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Publishers",
+            alias: "Series publishers information",
+            dataType: tableau.dataTypeEnum.string
+        }, {
+            id: "Current_week_rank",
+            alias: "Series current activity weekly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Current_month_rank",
+            alias: "Series current activity monthly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Current_year_rank",
+            alias: "Series current activity yearly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Old_week_rank",
+            alias: "Series old activity weekly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Old_month_rank",
+            alias: "Series old activity monthly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }, {
+            id: "Old_year_rank",
+            alias: "Series old activity yearly ranking information",
+            dataType: tableau.dataTypeEnum.int
+        }];
 
         var genreSchema = {
             id: "MangaGenre",
@@ -130,7 +240,21 @@
             columns: dailyRelCols
         };
 
-        schemaCallback([genreSchema, usersSchema, dailyRelSchema]);
+        // var authorSchema = {
+        //     id: "AuthorSeries",
+        //     alias: "Author series data",
+        //     columns: authorCols
+        // };
+
+        var seriesInfoSchema = {
+            id: "SeriesInformation",
+            alias: "Comprehensive series data",
+            columns: seriesInfoCols
+        };
+
+
+
+        schemaCallback([genreSchema, usersSchema, dailyRelSchema, seriesInfoSchema/*, authorSchema*/]);
     };
 
     // Download the data
@@ -214,37 +338,126 @@
             doneCallback();
         });
 
-        // $.postJSON("http://localhost:8889/api.mangaupdates.com/v1/authors/946927798/series", function(resp) {
-        //     var feat = resp,
-        //         authorSeriesData = [];
-        //     var Len = Object.keys(resp).length;
+        const series_id_arr = [64519011883, 15180124327, 51239621230, 55099564912, 19001585632, 47792036763, 18024418525];
 
-        //     // Iterate over the JSON object
-        //     if (table.tableInfo.id == "") {
-        //         for (var i = 0; i < ; i++) {
-        //         var Len = Object.keys(feat.).length;
-        //             for (var j = 0; j < Len; j++) {
-        //                 authorSeriesData.push({
-        //                     "Total_hits": feat.total_hits,
-        //                     "Page": feat.page,
-        //                     "Per_page": feat.per_page,
-        //                     "id": feat.results[i].record.id,
-        //                     "Title": feat.results[i].record.title,
-        //                     "Volume": feat.results[i].record.volume,
-        //                     "Chapter": feat.results[i].record.chapter,
-        //                     "Group_name": feat.results[i].record.groups[j].name,
-        //                     "Group_id": feat.results[i].record.groups[j].group_id,
-        //                     "Release_date": feat.results[i].record.release_date,
-        //                     "Series_id": feat.results[i].metadata.series.series_id
-        //             })};
-        //         }
+        for (let id of series_id_arr) {
+            $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/series/"+`${id}`, function(resp) {
 
-        //     }
+                var feat = resp,
+                    seriesInfoData = [];
+                var genreLen = feat.genres.length;
+                var categoryLen = feat.categories.length;
+                var authorLen = feat.authors.length;
+                var publisherLen = feat.publishers.length;
 
-        //     table.appendRows(authorSeriesData);
-        //     doneCallback();
-        // });
+                // Iterate over the JSON object
+                if (table.tableInfo.id == "SeriesInformation") {
+                    let genStr = "";
+                    let catStr = "";
+                    let authStr = "";
+                    let pubStr = "";
+
+                    for (var i = 0; i < genreLen; i++) {
+                        if (i === genreLen - 1) {
+                            genStr += feat.genres[i].genre
+                        } else {
+                            genStr += feat.genres[i].genre + ", "
+                        }
+                    };
+
+                    for (var j = 0; j < categoryLen; j++) {
+                        if (j === categoryLen - 1) {
+                            catStr += feat.categories[j].category
+                        } else {
+                            catStr += feat.categories[j].category + ", "
+                        }
+                    };
+
+                    for (var k = 0; k < authorLen; k++) {
+                        if (k === authorLen - 1) {
+                            authStr += feat.authors[k].name + `(${feat.authors[k].type})`
+                        } else {
+                            authStr += feat.authors[k].name + `(${feat.authors[k].type})` + ", "
+                        }
+                    };
+
+                    for (var m = 0; m < publisherLen; m++) {
+                        if (m === publisherLen - 1) {
+                            pubStr += feat.publishers[m].publisher_name + `(${feat.publishers[m].type})`
+                        } else {
+                            pubStr += feat.publishers[m].publisher_name + `(${feat.publishers[m].type})` + ", "
+                        }
+                    };
+
+                    seriesInfoData.push({
+                        "Series_id": feat.series_id,
+                        "Title": feat.title,
+                        "Url": `${feat.url}`,
+                        "Description": feat.description,
+                        "Image_url": `${feat.image.url.original}`,
+                        "Type": feat.type,
+                        "Year": feat.year,
+                        "Bayesian_rating": feat.bayesian_rating,
+                        "Genres": genStr,
+                        "Categories": catStr,
+                        "Latest_chapter": feat.latest_chapter,
+                        "Status": feat.completed,
+                        "Anime_start": feat.anime.start,
+                        "Anime_end": feat.anime.end,
+                        "Authors": authStr,
+                        "Publishers": pubStr,
+                        "Current_week_rank": feat.rank.position.week,
+                        "Current_month_rank": feat.rank.position.month,
+                        "Current_year_rank": feat.rank.position.year,
+                        "Old_week_rank": feat.rank.old_position.week,
+                        "Old_month_rank": feat.rank.old_position.month,
+                        "Old_year_rank": feat.rank.old_position.year
+                    });
+                }
+                table.appendRows(seriesInfoData);
+                doneCallback();
+            });
+        }
+
+
+
     };
+
+    // var authorBody = {
+    //     "orderby": "title"
+    // }
+    // console.log(authorBody);
+    // myConnector.postData = function(table, doneCallback) {
+    //     var authorBody = {
+    //         "orderby": "title"
+    //     }
+    //     console.log(authorBody);
+    //
+    //     $.postJSON("http://localhost:8889/api.mangaupdates.com/v1/authors/946927798/series", authorBody, function(resp) {
+    //         var feat = resp,
+    //             authorSeriesData = [];
+    //         var seriesLen = Object.keys(resp).length;
+
+    //         // Iterate over the JSON object
+    //         if (table.tableInfo.id == "AuthorSeries") {
+    //             for (var i = 0; i < seriesLen; i++) {
+    //             // var genreLen = feat.series_list[i].genres.length;
+    //             //     for (var j = 0; j < genreLen; j++) {
+    //                     authorSeriesData.push({
+    //                         "Total_series": feat.total_series,
+    //                         "Title": feat.series_list[i].title,
+    //                         "Series_id": feat.series_list[i].series_id,
+    //                         "Year": feat.series_list[i].year
+    //                         // "Genres": feat.series_list[i].genres[j]
+    //                 })};
+    //             // }
+
+    //         }
+
+    //         table.appendRows(authorSeriesData);
+    //         doneCallback();
+    //     });
+    // };
 
     tableau.registerConnector(myConnector);
 
