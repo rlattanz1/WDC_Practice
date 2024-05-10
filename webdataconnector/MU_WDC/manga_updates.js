@@ -343,12 +343,13 @@
         for (let id of series_id_arr) {
             $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/series/"+`${id}`, function(resp) {
 
-                var feat = resp,
-                    seriesInfoData = [];
-                var genreLen = feat.genres.length;
-                var categoryLen = feat.categories.length;
-                var authorLen = feat.authors.length;
-                var publisherLen = feat.publishers.length;
+                let feat = resp;
+                let seriesInfoData = [];
+                let CSV_data = [];
+                let genreLen = feat.genres.length;
+                let categoryLen = feat.categories.length;
+                let authorLen = feat.authors.length;
+                let publisherLen = feat.publishers.length;
 
                 // Iterate over the JSON object
                 if (table.tableInfo.id == "SeriesInformation") {
@@ -357,7 +358,7 @@
                     let authStr = "";
                     let pubStr = "";
 
-                    for (var i = 0; i < genreLen; i++) {
+                    for (let i = 0; i < genreLen; i++) {
                         if (i === genreLen - 1) {
                             genStr += feat.genres[i].genre
                         } else {
@@ -365,7 +366,7 @@
                         }
                     };
 
-                    for (var j = 0; j < categoryLen; j++) {
+                    for (let j = 0; j < categoryLen; j++) {
                         if (j === categoryLen - 1) {
                             catStr += feat.categories[j].category
                         } else {
@@ -373,7 +374,7 @@
                         }
                     };
 
-                    for (var k = 0; k < authorLen; k++) {
+                    for (let k = 0; k < authorLen; k++) {
                         if (k === authorLen - 1) {
                             authStr += feat.authors[k].name + `(${feat.authors[k].type})`
                         } else {
@@ -381,13 +382,40 @@
                         }
                     };
 
-                    for (var m = 0; m < publisherLen; m++) {
+                    for (let m = 0; m < publisherLen; m++) {
                         if (m === publisherLen - 1) {
                             pubStr += feat.publishers[m].publisher_name + `(${feat.publishers[m].type})`
                         } else {
                             pubStr += feat.publishers[m].publisher_name + `(${feat.publishers[m].type})` + ", "
                         }
                     };
+
+                    // CSV_data.push(
+                        // [
+                        // feat.series_id,
+                        // feat.title,
+                        // `${feat.url}`,
+                        // feat.description,
+                        // `${feat.image.url.original}`,
+                        // feat.type,
+                        // feat.year,
+                        // feat.bayesian_rating,
+                        // genStr,
+                        // catStr,
+                        // feat.latest_chapter,
+                        // feat.completed,
+                        // feat.anime.start,
+                        // feat.anime.end,
+                        // authStr,
+                        // pubStr,
+                        // feat.rank.position.week,
+                        // feat.rank.position.month,
+                        // feat.rank.position.year,
+                        // feat.rank.old_position.week,
+                        // feat.rank.old_position.month,
+                        // feat.rank.old_position.year
+                        // ]
+                    // );
 
                     seriesInfoData.push({
                         "Series_id": feat.series_id,
@@ -414,13 +442,32 @@
                         "Old_year_rank": feat.rank.old_position.year
                     });
                 }
+
+                if (CSV_data.length === 0) {
+                    seriesInfoData.forEach(function (row) {
+                        let values = Object.keys(row).map(function(value) {
+                            return typeof(value) === 'string' ? `"${value}"` : value;
+                        });
+                        CSV_data.push(values.join(","));
+                    });
+                };
+                seriesInfoData.forEach(function (row) {
+                    let values = Object.values(row).map(function(value) {
+                        return typeof(value) === 'string' ? `"${value}"` : value;
+                    });
+                    CSV_data.push(values.join(","));
+                });
+                if (CSV_data.length === series_id_arr.length) {
+                    let csv_blob = new Blob([CSV_data.join("\n")], {type: 'text/csv;charset=utf-8;'});
+                    let csv_url = window.URL.createObjectURL(csv_blob);
+                    let link = 
+                    console.log(csv_blob, csv_url);
+                };
+
                 table.appendRows(seriesInfoData);
                 doneCallback();
             });
         }
-
-
-
     };
 
     // var authorBody = {
