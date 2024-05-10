@@ -62,18 +62,18 @@ class TablePreview extends Component {
           tableInfo.incrementColumnId ?
             <p> {`Incremental Refresh Column: ${incColumn}`} </p>
             : null
-        }
+          }
         <CollapsibleTable
           name="Column Metadata"
           header={columnTableHeader}
-        >
+          >
           {columnElements}
         </CollapsibleTable>
         {
           hasData ?
-            <CollapsibleTable
-              name="Table Data"
-              header={dataTableHeader}
+          <CollapsibleTable
+          name="Table Data"
+          header={dataTableHeader}
             >
               {dataElements}
             </CollapsibleTable>

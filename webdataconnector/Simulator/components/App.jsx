@@ -8,7 +8,7 @@ import { Grid,
   PageHeader,
   Label,
   Tabs,
-  Tab } from 'react-bootstrap';
+  Tab} from 'react-bootstrap';
 
 // Actions
 import * as simulatorActions from '../actions/simulator_actions';

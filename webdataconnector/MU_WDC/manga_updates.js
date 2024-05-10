@@ -339,13 +339,13 @@
         });
 
         const series_id_arr = [64519011883, 15180124327, 51239621230, 55099564912, 19001585632, 47792036763, 18024418525];
+        let CSV_data = [];
 
         for (let id of series_id_arr) {
             $.getJSON("http://localhost:8889/api.mangaupdates.com/v1/series/"+`${id}`, function(resp) {
 
                 let feat = resp;
                 let seriesInfoData = [];
-                let CSV_data = [];
                 let genreLen = feat.genres.length;
                 let categoryLen = feat.categories.length;
                 let authorLen = feat.authors.length;
@@ -457,12 +457,22 @@
                     });
                     CSV_data.push(values.join(","));
                 });
-                if (CSV_data.length === series_id_arr.length) {
+
+
+                console.log(CSV_data, "csv")
+                console.log(CSV_data.length, "csv length")
+                console.log(series_id_arr.length)
+
+                if (CSV_data.length === series_id_arr.length + 1) {
                     let csv_blob = new Blob([CSV_data.join("\n")], {type: 'text/csv;charset=utf-8;'});
                     let csv_url = window.URL.createObjectURL(csv_blob);
-                    let link = 
-                    console.log(csv_blob, csv_url);
-                };
+                    let link = document.createElement("a");
+                    link.href = csv_url;
+                    link.download = "data.csv";
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }
 
                 table.appendRows(seriesInfoData);
                 doneCallback();
