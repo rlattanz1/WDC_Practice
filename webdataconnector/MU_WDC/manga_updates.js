@@ -362,7 +362,7 @@
                         if (i === genreLen - 1) {
                             genStr += feat.genres[i].genre
                         } else {
-                            genStr += feat.genres[i].genre + ", "
+                            genStr += feat.genres[i].genre + ","
                         }
                     };
 
@@ -370,7 +370,7 @@
                         if (j === categoryLen - 1) {
                             catStr += feat.categories[j].category
                         } else {
-                            catStr += feat.categories[j].category + ", "
+                            catStr += feat.categories[j].category + ","
                         }
                     };
 
@@ -390,37 +390,10 @@
                         }
                     };
 
-                    // CSV_data.push(
-                        // [
-                        // feat.series_id,
-                        // feat.title,
-                        // `${feat.url}`,
-                        // feat.description,
-                        // `${feat.image.url.original}`,
-                        // feat.type,
-                        // feat.year,
-                        // feat.bayesian_rating,
-                        // genStr,
-                        // catStr,
-                        // feat.latest_chapter,
-                        // feat.completed,
-                        // feat.anime.start,
-                        // feat.anime.end,
-                        // authStr,
-                        // pubStr,
-                        // feat.rank.position.week,
-                        // feat.rank.position.month,
-                        // feat.rank.position.year,
-                        // feat.rank.old_position.week,
-                        // feat.rank.old_position.month,
-                        // feat.rank.old_position.year
-                        // ]
-                    // );
-
                     seriesInfoData.push({
                         "Series_id": feat.series_id,
                         "Title": feat.title,
-                        "Url": `${feat.url}`,
+                        "Url": `'${feat.url}'`,
                         "Description": feat.description,
                         "Image_url": `${feat.image.url.original}`,
                         "Type": feat.type,
@@ -458,10 +431,6 @@
                     CSV_data.push(values.join(","));
                 });
 
-
-                console.log(CSV_data, "csv")
-                console.log(CSV_data.length, "csv length")
-                console.log(series_id_arr.length)
 
                 if (CSV_data.length === series_id_arr.length + 1) {
                     let csv_blob = new Blob([CSV_data.join("\n")], {type: 'text/csv;charset=utf-8;'});
