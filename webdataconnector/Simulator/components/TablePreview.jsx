@@ -97,23 +97,6 @@ class TablePreview extends Component {
             </Button>
         }
         {
-          !this.props.fetchInProgress ?
-            <Button
-              className="fetch-btn"
-              onClick={this.freshFetch}
-              bsStyle="success"
-            >
-              Download CSV File
-            </Button> :
-            <Button
-              className="fetch-btn"
-              disabled
-              bsStyle="success"
-            >
-              Downloading CSV File...
-            </Button>
-        }
-        {
           canIncrementalUpdate ?
             <Button
               className="incremental-fetch-btn"
