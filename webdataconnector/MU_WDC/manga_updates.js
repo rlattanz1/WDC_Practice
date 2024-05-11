@@ -141,6 +141,10 @@
             alias: "Series title",
             dataType: tableau.dataTypeEnum.string
         }, {
+            id: "Associated_names",
+            alias: "other series names",
+            dataType: tableau.dataTypeEnum.string
+        }, {
             id: "Url",
             alias: "series url",
             dataType: tableau.dataTypeEnum.string
@@ -338,7 +342,90 @@
             doneCallback();
         });
 
-        const series_id_arr = [64519011883, 15180124327, 51239621230, 55099564912, 19001585632, 47792036763, 18024418525];
+        let series_id_arr = [
+                                55099564912,
+                                40319778780,
+                                8551962520,
+                                17360452316,
+                                36271319846,
+                                70994361491,
+                                74102321905,
+                                23393951235,
+                                65844543890,
+                                20546760497,
+                                49449837876,
+                                // 62774509478,
+                                // 16354735346,
+                                // 19001585632,
+                                // 61251107617,
+                                // 36164756587,
+                                // 23801312094,
+                                // 63868402874,
+                                // 22666849312,
+                                // 53228754715,
+                                // 50288253485,
+                                // 10663654534,
+                                // 66577264547,
+                                // 51239621230,
+                                // 69539459798,
+                                // 48962893190,
+                                // 54125238536,
+                                // 75396829504,
+                                // 20306601246,
+                                // 45405144027,
+                                // 39487377876,
+                                // 69069123353,
+                                // 76169560986,
+                                // 64547378406,
+                                // 49543469479,
+                                // 68749871234,
+                                // 14516254239,
+                                // 62758791984,
+                                // 60115487363,
+                                // 20867452709,
+                                // 64201264591,
+                                // 21907104419,
+                                // 30535847369,
+                                // 64519011883,
+                                // 17036345354,
+                                // 67814124606,
+                                // 67339072487,
+                                // 63166767668,
+                                // 75313580091,
+                                // 25082474853,
+                                // 50302817858,
+                                // 6107459573,
+                                // 5534825855,
+                                // 1613386561,
+                                // 3479935384,
+                                // 270105846,
+                                // 23180546580,
+                                // 62053723305,
+                                // 61059372898,
+                                // 31874539588,
+                                // 39882347810,
+                                // 920710670,
+                                // 29646926262,
+                                // 75336092483,
+                                // 67109595079,
+                                // 20334720872,
+                                // 77962975056,
+                                // 41967613460,
+                                // 7295099394,
+                                // 72274276213,
+                                // 6656841273,
+                                // 49348817588,
+                                // 36318850791,
+                                // 65585554506,
+                                // 23867152378,
+                                // 75048134667,
+                                // 34174651233,
+                                // 4324727424,
+                                // 64167009715,
+                                // 68146605008,
+                                55665151734
+                            ];
+
         let CSV_data = [];
 
         for (let id of series_id_arr) {
@@ -350,6 +437,7 @@
                 let categoryLen = feat.categories.length;
                 let authorLen = feat.authors.length;
                 let publisherLen = feat.publishers.length;
+                let associatedLen = feat.associated.length;
 
                 // Iterate over the JSON object
                 if (table.tableInfo.id == "SeriesInformation") {
@@ -357,12 +445,13 @@
                     let catStr = "";
                     let authStr = "";
                     let pubStr = "";
+                    let assStr = "";
 
                     for (let i = 0; i < genreLen; i++) {
                         if (i === genreLen - 1) {
                             genStr += feat.genres[i].genre
                         } else {
-                            genStr += feat.genres[i].genre + ","
+                            genStr += feat.genres[i].genre + ", "
                         }
                     };
 
@@ -370,7 +459,15 @@
                         if (j === categoryLen - 1) {
                             catStr += feat.categories[j].category
                         } else {
-                            catStr += feat.categories[j].category + ","
+                            catStr += feat.categories[j].category + ", "
+                        }
+                    };
+
+                    for (let l = 0; l < associatedLen; l++) {
+                        if (l === associatedLen - 1) {
+                            assStr += feat.associated[l].title
+                        } else {
+                            assStr += feat.associated[l].title + ", "
                         }
                     };
 
@@ -393,6 +490,7 @@
                     seriesInfoData.push({
                         "Series_id": feat.series_id,
                         "Title": feat.title,
+                        "Associated_names": assStr,
                         "Url": `'${feat.url}'`,
                         "Description": feat.description,
                         "Image_url": `${feat.image.url.original}`,
@@ -432,16 +530,16 @@
                 });
 
 
-                if (CSV_data.length === series_id_arr.length + 1) {
-                    let csv_blob = new Blob([CSV_data.join("\n")], {type: 'text/csv;charset=utf-8;'});
-                    let csv_url = window.URL.createObjectURL(csv_blob);
-                    let link = document.createElement("a");
-                    link.href = csv_url;
-                    link.download = "data.csv";
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                }
+                // if (CSV_data.length === series_id_arr.length + 1) {
+                //     let csv_blob = new Blob([CSV_data.join("\n")], {type: 'text/csv;charset=utf-8;'});
+                //     let csv_url = window.URL.createObjectURL(csv_blob);
+                //     let link = document.createElement("a");
+                //     link.href = csv_url;
+                //     link.download = "data.csv";
+                //     document.body.appendChild(link);
+                //     link.click();
+                //     document.body.removeChild(link);
+                // }
 
                 table.appendRows(seriesInfoData);
                 doneCallback();
